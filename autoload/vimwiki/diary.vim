@@ -258,6 +258,51 @@ function! vimwiki#diary#generate_diary_section() "{{{
   endif
 endfunction "}}}
 
+function! vimwiki#diary#diary_default_note(year, month, day) "{{{
+   let day = s:prefix_zero(a:day)
+   let month = s:prefix_zero(a:month)
+   let diary_file = VimwikiGet('path').VimwikiGet('diary_rel_path').
+         \ a:year.'-'.month.'-'.day.VimwikiGet('ext')
+    if filereadable(diary_file)
+        return
+    endif
+    if a:month == 1
+        let monthn = "Jan" " month name
+    elseif a:month == 2
+        let monthn = "Feb"
+    elseif a:month == 3
+        let monthn = "Mar"
+    elseif a:month == 4
+        let monthn = "Apr"
+    elseif a:month == 5
+        let monthn = "May"
+    elseif a:month == 6
+        let monthn = "Jun"
+    elseif a:month == 7
+        let monthn = "Jul"
+    elseif a:month == 8
+        let monthn = "Aug"
+    elseif a:month == 9
+        let monthn = "Sep"
+    elseif a:month == 10
+        let monthn = "Oct"
+    elseif a:month == 11
+        let monthn = "Nov"
+    elseif a:month == 12
+        let monthn = "Dec"
+    endif    
+    let header = a:day . " " . monthn . " " . a:year
+    exe "norm i=== " . header . " ===\n"
+    exe "norm i-------------------------------\n"
+    exe "norm i\n"
+    exe "norm i| When | What | Where | Notes |\n"
+    exe "norm i|------|------|-------|-------|\n"
+    exe "norm i|      |      |       |       |\n"
+    exe "norm i\n"
+    exe "norm i-------------------------------\n"
+endfunction "}}}
+
+
 " Calendar.vim {{{
 " Callback function.
 function! vimwiki#diary#calendar_action(day, month, year, week, dir) "{{{
@@ -280,6 +325,7 @@ function! vimwiki#diary#calendar_action(day, month, year, week, dir) "{{{
 
   " XXX: Well, +1 is for inconsistent index basing...
   call vimwiki#diary#make_note(g:vimwiki_current_idx+1, 0, link)
+  call vimwiki#diary#diary_default_note(a:year, a:month, a:day)
 endfunction "}}}
 
 " Sign function.
